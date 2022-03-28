@@ -5,7 +5,9 @@ description = ""
 authors = ["Yang <yl4070@rit.edu>"]
 
 [tool.poetry.dependencies]
-python = "^3.9"
+python = ">=3.9,<3.11"
+click = "^8.1.0"
+numba = "^0.55.1"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
