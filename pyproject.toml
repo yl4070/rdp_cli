@@ -21,3 +21,4 @@ build-backend = "poetry.core.masonry.api"
 [tool.poetry.scripts]
 rdap = "rdp_cli.greet:rdap"
 impute = "rdp_cli.impute:impute"
+kfold = "rdp_cli.train_split:kfold_split"
