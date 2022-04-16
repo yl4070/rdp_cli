@@ -1,17 +1,32 @@
 from operator import delitem
 from utils.IO import load_data
+from datatable import f
+import datatable as dt
 import numpy as np
 import click
 
 
-def __impute_mean(data, col):
-    m = np.nanmean(data[:, col])
-    idx = np.argwhere(np.isnan(data[:,col])).tolist()
+def _impute(DT, col, fun):
 
-    for i in idx:
-        data[i[0], col] = m
+    funs_dict = {"mean": dt.mean, "median": dt.median}
+
+    Cl = DT[:, col]
+    rest = DT[:, [col != x for x in DT.names]]
+    if fun != "zero":
+
+        m = Cl[:, funs_dict[fun](f[col])][0,0]
+        if Cl.stype == dt.stype.int32 or Cl.stype == dt.stype.int64:
+            m = int(m)
+        
+        Cl.replace(None, m)
+    else:
+        Cl = Cl[:,f[:].extend({f"{col}_ind": f[col] == None})]
+        Cl.replace(None, 0)
     
-    return data
+    Cl.cbind(rest)
+
+    return Cl        
+
 
 @click.command()
 @click.option("--method", default="mean")
@@ -20,20 +35,20 @@ def __impute_mean(data, col):
 def impute(method, file, col):
     changed = False
     data = load_data(file)
-    try:
-        col = int(col)
-    except:
-        click.echo("only integer allowed for col!")
-        return
+    # try:
+    #     col = int(col)
+    # except:
+    #     click.echo("only integer allowed for col!")
+    #     return
 
-    if method == "mean":
-        data = __impute_mean(data, col)
+    if method in {"mean", "median", "zero"}:
+        data = _impute(data, col, method)
         changed = True
     else:
         click.echo("method not impletemented")
     
     if changed == True:
-        np.savetxt(file, data, delimiter=",")
+        data.to_csv(file)
         click.echo("Success!")
 
 
