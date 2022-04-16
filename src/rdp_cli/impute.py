@@ -8,7 +8,7 @@ import click
 
 def _impute(DT, col, fun):
 
-    funs_dict = {"mean": dt.mean, "median": dt.median}
+    funs_dict = {"mean": dt.mean, "median": dt.median, "min": dt.min, "max": dt.max}
 
     Cl = DT[:, col]
     rest = DT[:, [col != x for x in DT.names]]
@@ -41,11 +41,11 @@ def impute(method, file, col):
     #     click.echo("only integer allowed for col!")
     #     return
 
-    if method in {"mean", "median", "zero"}:
+    if method in {"mean", "median", "zero", "min", "max"}:
         data = _impute(data, col, method)
         changed = True
     else:
-        click.echo("method not impletemented")
+        click.echo("method not implemented")
     
     if changed == True:
         data.to_csv(file)
