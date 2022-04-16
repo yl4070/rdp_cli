@@ -1,6 +1,7 @@
 import csv
 import re
 import numpy as np
+import datatable as dt
 
 def parse_number(string):
   try:
@@ -18,16 +19,17 @@ def load_data(file_name):
     """
     This function will load file return as numpy array for numerical values.
     """
-    arr = []
-    with open(file_name, mode="r") as f:
-        lines = csv.reader(f)
-        for l in lines:
-            lst = l[0].split()
+    # arr = []
+    # with open(file_name, mode="r") as f:
+    #     lines = csv.reader(f)
+    #     for l in lines:
+    #         lst = l[0].split()
 
-            lst = [parse_number(el) for el in lst]
-            arr.append(lst)
+    #         lst = [parse_number(el) for el in lst]
+    #         arr.append(lst)
 
-    arr = np.array(arr, dtype=np.float32)
+    # arr = np.array(arr, dtype=np.float32)
 
-    return arr
+    DT = dt.fread(file_name)
+    return DT
 
