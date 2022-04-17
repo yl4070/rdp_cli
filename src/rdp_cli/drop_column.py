@@ -1,8 +1,12 @@
 from csv import writer
 from csv import reader
+import click
 
-
-def drop_column(input_file, output_file, transform_row):
+@click.command()
+@click.option("--output_file", required = True)
+@click.argument("input_file")
+def drop_column(input_file, output_file):
+    transform_row = lambda row, line_num: row.remove(row[0])
     with open(input_file, 'r') as read_obj, \
             open(output_file, 'w', newline='') as write_obj:
         csv_reader = reader(read_obj)
@@ -16,4 +20,4 @@ def drop_column(input_file, output_file, transform_row):
 
 
 # Remove unnecessary columns
-drop_column('input.csv', 'drop_column.csv', lambda row, line_num: row.remove(row[0]))
+# drop_column('input.csv', 'drop_column.csv', lambda row, line_num: row.remove(row[0]))

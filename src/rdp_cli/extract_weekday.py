@@ -1,9 +1,14 @@
 from csv import writer
 from csv import reader
 from datetime import datetime as dt
+import click
 
+@click.command()
+@click.option("--output_file", required = True)
+@click.argument("input_file")
+def add_weekday(input_file, output_file):
 
-def add_weekday(input_file, output_file, transform_row):
+    transform_row = lambda row, line_num: row.append(dt.strptime(row[5], '%m-%d-%Y %H:%M:%S%p').weekday())
     with open(input_file, 'r') as read_obj, \
             open(output_file, 'w', newline='') as write_obj:
         csv_reader = reader(read_obj)
@@ -18,4 +23,4 @@ def add_weekday(input_file, output_file, transform_row):
             csv_writer.writerow(row)
 
 
-add_weekday('input.csv', 'weekday.csv', lambda row, line_num: row.append(dt.strptime(row[5], '%m-%d-%Y %H:%M:%S%p').weekday()))
+# add_weekday('input.csv', 'weekday.csv', lambda row, line_num: row.append(dt.strptime(row[5], '%m-%d-%Y %H:%M:%S%p').weekday()))
