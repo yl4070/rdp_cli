@@ -21,6 +21,7 @@ build-backend = "poetry.core.masonry.api"
 [tool.poetry.scripts]
 rdap = "rdp_cli.greet:rdap"
 impute = "rdp_cli.impute:impute"
+normalize = "rdp_cli.normalize:normalize"
 kfold = "rdp_cli.train_split:kfold_split"
 nzv = "rdp_cli.cor_var:nzv"
 corrm = "rdp_cli.cor_var:cor_rm"
