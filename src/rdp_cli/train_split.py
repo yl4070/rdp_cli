@@ -8,10 +8,11 @@ import click
 
 
 @click.command()
-@click.option("--nsplits", default="3")
-@click.option("--seed", default="1")
+@click.option("--nsplits", default=3)
+@click.option("--seed", default=1)
+@click.option("--justone", is_flag=True)
 @click.argument("data")
-def kfold_split(data, nsplits, seed):
+def kfold_split(data, nsplits, seed, justone):
     if not os.path.isdir("folds"):
         os.mkdir("folds")
 
@@ -22,6 +23,8 @@ def kfold_split(data, nsplits, seed):
         
         df[fold[0], :].to_csv(f"folds/train{i}.csv")
         df[fold[1], :].to_csv(f"folds/test{i}.csv")
+        if (justone):
+            break
     
     click.echo("Success!")
 

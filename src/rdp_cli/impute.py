@@ -1,6 +1,6 @@
 from operator import delitem
 from utils.IO import load_data
-from datatable import f
+from datatable import f, as_type
 import datatable as dt
 import numpy as np
 import click
@@ -8,7 +8,7 @@ import click
 
 def _impute(DT, col, fun):
 
-    funs_dict = {"mean": dt.mean, "median": dt.median}
+    funs_dict = {"mean": dt.mean, "median": dt.median, "min": dt.min, "max": dt.max}
 
     Cl = DT[:, col]
     rest = DT[:, [col != x for x in DT.names]]
@@ -30,22 +30,37 @@ def _impute(DT, col, fun):
 
 @click.command()
 @click.option("--method", default="mean")
-@click.option("--file")
+@click.argument("file")
 @click.option("--col")
-def impute(method, file, col):
+@click.option("--force_int", is_flag = True)
+@click.option("--force_float", is_flag = True)
+def impute(method, file, col, force_int = False, force_float = False):
     changed = False
+    if force_float == force_int == True:
+        click.echo("Not possible...") 
+        return
+
     data = load_data(file)
+    if force_float:
+        c = data[:, as_type(f[col], float)]
+        data[col] = c
+    elif force_int:
+        c = data[:, as_type(f[col], int)]
+        data[col] = c
+        
     # try:
     #     col = int(col)
     # except:
     #     click.echo("only integer allowed for col!")
     #     return
 
-    if method in {"mean", "median", "zero"}:
+    if method in {"mean", "median", "zero", "min", "max"}:
         data = _impute(data, col, method)
         changed = True
+    elif method == "dummy":
+        changed = True
     else:
-        click.echo("method not impletemented")
+        click.echo("method not implemented")
     
     if changed == True:
         data.to_csv(file)
