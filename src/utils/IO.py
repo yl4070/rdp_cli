@@ -30,6 +30,6 @@ def load_data(file_name):
 
     # arr = np.array(arr, dtype=np.float32)
 
-    DT = dt.fread(file_name)
+    DT = dt.fread(file_name, fill = True, skip_blank_lines = True)
     return DT
 
