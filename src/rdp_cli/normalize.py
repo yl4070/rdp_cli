@@ -13,11 +13,13 @@ def _normalize(DT, col, mode):
     if mode == "minmax":
         min = (int)(Cl[:, dt.min(f[col])][0,0])
         max = (int)(Cl[:, dt.max(f[col])][0,0])
+        # xnew = (x-min)/(max-min)
         for i in range(Cl.nrows): 
             if Cl[i,0]: Cl[i,0] = (int)((Cl[i,0]-min)/(max-min))
     elif mode == "std":
         mean = Cl[:, dt.mean(f[col])][0,0] 
         sd = Cl[:, dt.sd(f[col])][0,0]
+        # xnew = (x-mean)/standard_derivation
         for i in range(Cl.nrows): 
             if Cl[i,0]: Cl[i,0] = (int)((Cl[i,0]-mean)/sd)
 
@@ -28,7 +30,7 @@ def _normalize(DT, col, mode):
 
 @click.command()
 @click.option("--mode", default="minmax")
-@click.option("--file")
+@click.argument("file")
 @click.option("--col")
 def normalize(mode, file, col):
     changed = False
