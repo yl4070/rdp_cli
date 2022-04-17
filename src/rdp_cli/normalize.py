@@ -1,6 +1,6 @@
 from operator import delitem
 from utils.IO import load_data
-from datatable import f
+from datatable import f,as_type
 import datatable as dt
 import numpy as np
 import click
@@ -9,19 +9,20 @@ import click
 def _normalize(DT, col, mode):
 
     Cl = DT[:, col]
+    
     rest = DT[:, [col != x for x in DT.names]]
     if mode == "minmax":
-        min = (int)(Cl[:, dt.min(f[col])][0,0])
-        max = (int)(Cl[:, dt.max(f[col])][0,0])
+        min = Cl[:, dt.min(f[col])][0,0]
+        max = Cl[:, dt.max(f[col])][0,0]
         # xnew = (x-min)/(max-min)
         for i in range(Cl.nrows): 
-            if Cl[i,0]: Cl[i,0] = (int)((Cl[i,0]-min)/(max-min))
+            if Cl[i,0]: Cl[i,0] = as_type((Cl[i,0]-min)/(max-min), Cl.stype)
     elif mode == "std":
         mean = Cl[:, dt.mean(f[col])][0,0] 
         sd = Cl[:, dt.sd(f[col])][0,0]
         # xnew = (x-mean)/standard_derivation
         for i in range(Cl.nrows): 
-            if Cl[i,0]: Cl[i,0] = (int)((Cl[i,0]-mean)/sd)
+            if Cl[i,0]: Cl[i,0] = as_type((Cl[i,0]-mean)/sd, Cl.stype)
 
     Cl.cbind(rest)
 
